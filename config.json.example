@@ -1,0 +1,23 @@
+{
+    "maxDailyRequests": 2,
+    "randomNumber": 1,
+    "receiveEMailList": ["17612189325@163.com","openpicklabs@hotmail.com"],
+    "timeout": 30,
+    "requestDelay": 2,
+    "maxHistoryFileSizeMB": 2,
+    "apiUrl": "https://me-ding.com/msd-hpv-2505/api",
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "requestBody": {
+        "template": "default_payload"
+    },
+    "emailSettings": {
+        "smtpServer": "smtp.qq.com",
+        "smtpPort": 587,
+        "enableSsl": true,
+        "senderEmail": "xxxxxx@qq.com",
+        "senderPassword": "xxxxxx",
+        "subject": "QrCode-DING Manager Daily Report"
+    }
+}

@@ -1,0 +1,37 @@
+# PowerShell specific files
+config.json
+*.ps1xml
+*.psc1
+*.psd1
+*.psm1
+*.pssc
+*.psrc
+
+# PowerShell ISE
+*.psise_*
+
+# PowerShell execution policy files
+Set-ExecutionPolicy*
+
+# PowerShell profiles
+$PROFILE*
+Microsoft.PowerShell_profile.ps1
+Microsoft.PowerShellISE_profile.ps1
+
+# PowerShell modules
+Modules/
+PSModules/
+
+# PowerShell logs
+*.log
+*.txt
+
+# PowerShell temporary files
+*.tmp
+*.temp
+
+# PowerShell cache
+*.cache
+
+# Windows PowerShell specific
+powershell.exe.config
