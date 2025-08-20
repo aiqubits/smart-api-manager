@@ -148,15 +148,15 @@ function New-EmailReport {
         [Parameter(Mandatory = $false)]
         [hashtable]$WorkflowResult = $null
     )
-    
+
     $currentDate = Get-Date -Format "yyyy-MM-dd"
     $currentTime = Get-Date -Format "HH:mm:ss"
     $currentUtcDate = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd")
-    
+    Write-Host "[DEBUG] Current date: $currentDate, Current UTC date: $currentUtcDate" -ForegroundColor Cyan
     # 获取今日统计数据
     $dailyStatusArray = Get-DailyRequestStatusArray -Data $Data
     $todayRecord = Find-TodayRecord -DailyStatusArray $dailyStatusArray -TargetDate $currentDate
-    
+    Write-Host "[DEBUG] Today's record: $($todayRecord | ConvertTo-Json -Depth 10)" -ForegroundColor Cyan
     # 如果没有今日记录，使用默认值
     if ($null -eq $todayRecord) {
         $todayRecord = @{
@@ -182,35 +182,22 @@ function New-EmailReport {
         $requestHistory = @($requestHistory)
     }
 
-    # Filter today's requests using multiple strategies
-    $todayRequests = $requestHistory | Where-Object { 
+    # Filter today's requests (compare date part of timestamp string directly, no timezone conversion)
+    $todayRequests = $requestHistory | Where-Object {
         try {
-            # Strategy 1: Compare UTC dates (most reliable for cross-timezone consistency)
-            $utcTime = [DateTime]::Parse($_.timestamp, $null, [System.Globalization.DateTimeStyles]::RoundtripKind)
-            $utcDate = $utcTime.ToString("yyyy-MM-dd")
-            $utcMatch = $utcDate -eq $currentUtcDate
-            
-            # Strategy 2: Compare local dates (for local timezone matching)
-            $localTime = $utcTime.ToLocalTime()
-            $localDate = $localTime.ToString("yyyy-MM-dd")
-            $localMatch = $localDate -eq $currentDate
-            
-            # Use UTC date comparison as primary, local as fallback
-            $match = $utcMatch -or $localMatch
-            
-            $match
+            $datePart = $_.timestamp.Substring(0, 10)
+            $datePart -eq $currentDate
         }
         catch {
             Write-Host "[WARN] Failed to parse timestamp: $($_.timestamp)" -ForegroundColor Yellow
             $false
         }
-    } | Sort-Object { 
+    } | Sort-Object {
         try {
-            $utcTime = [DateTime]::Parse($_.timestamp, $null, [System.Globalization.DateTimeStyles]::RoundtripKind)
-            $utcTime.ToLocalTime()
+            $_.timestamp
         }
         catch {
-            [DateTime]::MinValue
+            ""
         }
     } -Descending
 

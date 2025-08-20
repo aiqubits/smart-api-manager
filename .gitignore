@@ -1,5 +1,7 @@
 # PowerShell specific files
 config.json
+data.json
+requestHistory.json
 *.ps1xml
 *.psc1
 *.psd1
